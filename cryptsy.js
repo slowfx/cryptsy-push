@@ -1,8 +1,10 @@
 var Pusher = require('pusher-node-client').PusherClient;
 var bindAll = require('lodash.bindall');
 
-var Cryptsy = function(market) {
+var Cryptsy = function(market, prefix) {
   bindAll(this);
+
+  this.channel_prefix = prefix ? prefix : 'trade';
 
   this.client = new Pusher({
     key: 'cb65d0a7a72cd94adf1f',
@@ -14,7 +16,7 @@ var Cryptsy = function(market) {
   this.connected = false;
 
   if(market)
-    this.subscribe(market);
+    this.subscribe(market, prefix);
 
   this.client.on('connect', this._subscribeQueue);
   this.client.connect();
@@ -32,7 +34,7 @@ Cryptsy.prototype.subscribe = function(market) {
   if(market instanceof Array)
     return market.forEach(this.subscribe);
 
-  var chanName = 'trade.' + market;
+  var chanName = this.channel_prefix + '.' + market;
 
   if(this.connected)
     this._subscribe(chanName);
@@ -52,7 +54,7 @@ Cryptsy.prototype._subscribe = function(market) {
 }
 
 Cryptsy.prototype.handle = function(e) {
-  this.emit('trade', e);
+  this.emit(this.channel_prefix, e);
 };
 
 module.exports = Cryptsy;

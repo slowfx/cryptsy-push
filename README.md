@@ -1,3 +1,11 @@
+Hello,
+
+support for ticker.X
+var cryptsy = new Cryptsy(1, "ticker");
+
+Thanks,
+
+
 # cryptsy-push
 
 Nodejs Wrapper for the Cryptsy Pusher API.
